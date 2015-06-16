@@ -11,3 +11,14 @@ SELECT course.name, course.credit FROM performance, course
 
 SELECT SUM(credit) FROM rule
     WHERE stand_name = "統計系";
+
+
+-- 各種VIEW
+select * from STANDARD_CREDIT;
+select * from COURSE_CREDIT;
+select * from PERSONAL_CREDIT;
+select * from GRADUATION_SEPERATE ORDER BY stu_id;
+select * from GRADUATE;
+select * from GRADUATE_FAIL;
+-- 
+-- 
