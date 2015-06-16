@@ -63,15 +63,24 @@ SELECT student.name, performance.grade, course.category, course.credit
 -- 拿到某系底下所有符合規定的課程id
 SELECT course.c_id FROM course 
     WHERE name IN(SELECT c_name
-                    FROM rule WHERE stand_name= '統計系');
+                    FROM rule WHERE stand_name= '統計系')
+                AND course.category = rule.category
+                AND course.department = rule.department
+                AND course.credit = rule.credit;
 
 SELECT course.c_id FROM course 
     WHERE name IN(SELECT c_name
-                    FROM rule WHERE stand_name= '日文輔系');
+                    FROM rule WHERE stand_name= '日文輔系')
+               AND course.category = rule.category
+               AND course.department = rule.department
+               AND course.credit = rule.credit;
 
 SELECT course.c_id FROM course 
     WHERE name IN(SELECT c_name
                     FROM rule WHERE stand_name= '會計輔系');
+               AND course.category = rule.category
+               AND course.department = rule.department
+               AND course.credit = rule.credit;
 
 -- 拿出在輔系課程中的成績
 
@@ -91,12 +100,10 @@ CREATE VIEW GRADUATION AS
 SELECT student.name, grad_type.stand_name, '是' as 'complete'
     FROM student, grad_type, performance
     WHERE student.stu_id = grad_type.stu_id 
-        AND 
+        AND student.stu_id IN(...)
 
 CREATE VIEW NOT_GRADUATION AS
 SELECT student.name, grad_type.stand_name, '否' as 'complete'
     FROM student, grad_type, performance
     WHERE student.stu_id = grad_type.stu_id 
-        AND 
-
-SELECT student.name, grad_type 
+        AND student.stu_id IN(...)
