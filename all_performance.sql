@@ -177,6 +177,14 @@ CREATE VIEW COURSE_CREDIT AS
 SELECT course.c_id, course.credit, name, stand_name FROM course, rule
     WHERE course.name = rule.c_name;
 
+SELECT SUM(COURSE_CREDIT.credit),performance.stu_id, stand_name
+     FROM performance, COURSE_CREDIT
+        WHERE performance.c_id = COURSE_CREDIT.c_id
+          AND performance.grade >= 60
+        GROUP BY stu_id, stand_name;
+
+-- 測試
+
 
 CREATE VIEW GRADUATION AS
 SELECT student.name, grad_type.stand_name, '是' as 'complete'
