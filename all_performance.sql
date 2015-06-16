@@ -1,3 +1,4 @@
+
 -- 拿出所有的performance
 SELECT *
     FROM student, performance ,course 
@@ -96,6 +97,87 @@ SELECT student.name, grad_type.stand_name
 
 
 
+
+
+-- FINAL QUERY
+
+SELECT grad_type.stu_id FROM  grad_type, course, performance
+    WHERE performance.c_id = course.c_id AND grad_type.stu_id = performance.stu_id
+          AND performance.c_id IN(SELECT course.c_id FROM course, rule
+                                WHERE name IN(
+                                    SELECT c_name FROM rule WHERE stand_name= '統計系')
+                                                    AND course.category = rule.category
+                                                    AND course.department = rule.department
+                                                    AND course.credit = rule.credit);
+
+SELECT grad_type.stu_id, grad_type.stand_name FROM grad_type, performance
+    WHERE grad_type.stu_id = performance.stu_id
+        AND performance.c_id IN(
+                                SELECT course.c_id FROM course, rule
+                                        WHERE name IN(
+                                            SELECT c_name FROM rule WHERE stand_name= '統計系')
+                                                            AND course.category = rule.category
+                                                            AND course.department = rule.department
+                                                            AND course.credit = rule.credit            
+                                                    )
+    GROUP BY grad_type.stu_id;
+
+
+SELECT performance.stu_id FROM course, performance 
+     WHERE performance.c_id = course.c_id 
+           AND performance.stu_id IN(SELECT stu_id
+                                        FROM performance
+                                        WHERE performance.c_id IN(SELECT course.c_id FROM course, rule 
+                                                                     WHERE name IN( 
+                                                                         SELECT c_name FROM rule WHERE stand_name= '統計系') 
+                                                                                AND course.category = rule.category 
+                                                                                AND course.department = rule.department 
+                                                                                AND course.credit = rule.credit);
+                                        -- GROUP BY performance.stu_id 
+                                        -- HAVING (performance.grade < ALL 60));
+
+
+
+
+
+
+
+
+
+
+
+SELECT DISTINCT performance.stu_id FROM course, performance 
+     WHERE performance.c_id = course.c_id 
+           AND performance.c_id IN(SELECT course.c_id FROM course, rule 
+                                        WHERE name IN( 
+                                            SELECT c_name FROM rule WHERE stand_name= '統計系') 
+                                                     AND course.category = rule.category 
+                                                     AND course.department = rule.department 
+                                                     AND course.credit = rule.credit) 
+           AND performance.stu_id IN(SELECT stu_id
+                                        FROM performance
+                                        GROUP BY performance.stu_id 
+                                        HAVING performance.grade < 60);
+
+-- 各系必修
+CREATE VIEW STANDARD_CREDIT AS
+SELECT SUM(credit), stand_name, category FROM rule 
+    GROUP BY stand_name, category;
+
+-- 各學生有修過
+CREATE VIEW PERFORMANCE_CREDIT AS
+SELECT SUM(course.credit), performance.stu_id, category
+    FROM performance, course
+    WHERE performance.c_id = course.c_id
+        AND performance.grade > 60
+        GROUP BY stu_id, category
+        HAVING performance.c_id IN 
+
+CREATE VIEW COURSE_CREDIT AS
+SELECT course.c_id, course.credit, name, stand_name FROM course, rule
+    WHERE course.name = rule.c_name;
+
+
 CREATE VIEW GRADUATION AS
 SELECT student.name, grad_type.stand_name, '是' as 'complete'
     FROM student, grad_type, performance
@@ -109,15 +191,4 @@ SELECT student.name, grad_type.stand_name, '否' as 'complete'
         AND student.stu_id IN(...)
 
 
--- FINAL QUERY
 
-SELECT performance.stu_id FROM course, performance
-    WHERE performance.c_id = course.c_id
-          AND performance.c_id IN(SELECT course.c_id FROM course, rule
-                                WHERE name IN(
-                                    SELECT c_name FROM rule WHERE stand_name= '統計系')
-                                                    AND course.category = rule.category
-                                                    AND course.department = rule.department
-                                                    AND course.credit = rule.credit)
-    GROUP BY performance.stu_id
-    HAVING ANY(performance.grade < 60);
