@@ -18,7 +18,7 @@ SELECT course.name, performance.grade, student.name
 SELECT student.name, AVG(performance.grade)
     FROM performance, student
     WHERE student.stu_id = performance.stu_id 
-    GROUP BY student.name;
+    GROUP BY student.stu_id;
 
 
 -- DEMO 3: 看standard 底下有哪些rule
