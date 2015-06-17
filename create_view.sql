@@ -6,7 +6,10 @@ SELECT SUM(credit) as stand_credit, stand_name, category
 CREATE VIEW COURSE_CREDIT AS
     SELECT course.c_id, course.credit, name, stand_name, course.category 
         FROM course, rule
-        WHERE course.name = rule.c_name;
+        WHERE course.name = rule.c_name
+              AND course.credit = rule.credit
+              AND course.category = rule.category
+              AND course.department = rule.department;
 
 CREATE VIEW PERSONAL_CREDIT AS
     SELECT SUM(COURSE_CREDIT.credit) AS stu_credit,

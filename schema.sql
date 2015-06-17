@@ -1,21 +1,23 @@
 CREATE TABLE IF NOT EXISTS Student(
     STU_ID int NOT NULL PRIMARY KEY,
-    NAME VARCHAR(30) NOT NULL);
+    NAME varchar(30) NOT NULL);
+
+CREATE TABLE IF NOT EXISTS Course(
+    C_ID varchar(20) NOT NULL PRIMARY KEY,
+    NAME varchar(40) NOT NULL,
+    CREDIT INT NOT NULL,
+    CATEGORY varchar(30) not null,
+    TEACHER varchar(20),
+    DEPARTMENT varchar(40) NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS Performance(
     C_ID varchar(20) NOT NULL,
     STU_ID int NOT NULL,
     GRADE int,
-    UNIQUE KEY PERFORM(STU_ID, C_ID)
-);
-
-CREATE TABLE IF NOT EXISTS Course(
-    C_ID varchar(20) NOT NULL PRIMARY KEY,
-    NAME varchar(40) NOT NULL,
-    CREDIT int NOT NULL,
-    CATEGORY varchar(30) not null,
-    TEACHER varchar(20),
-    DEPARTMENT varchar(40) NOT NULL
+    UNIQUE KEY PERFORM(STU_ID, C_ID),
+    FOREIGN KEY (STU_ID) REFERENCES Student(STU_ID),
+    FOREIGN KEY (C_ID) REFERENCES Course(C_ID)
 );
 
 CREATE TABLE IF NOT EXISTS Standard(

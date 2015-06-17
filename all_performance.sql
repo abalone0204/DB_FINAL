@@ -40,6 +40,7 @@ SELECT standard.name, student.stu_id,
 
 
 -- DEMO 5: 畢業審查
+
 -- 各系必修學分數（以修別來分類）
 CREATE VIEW STANDARD_CREDIT AS
 SELECT SUM(credit) as stand_credit, stand_name, category 
@@ -53,7 +54,10 @@ SELECT * FROM STANDARD_CREDIT;
 CREATE VIEW COURSE_CREDIT AS
     SELECT course.c_id, course.credit, name, stand_name, course.category 
         FROM course, rule
-        WHERE course.name = rule.c_name;
+        WHERE course.name = rule.c_name
+              AND course.credit = rule.credit
+              AND course.category = rule.category
+              AND course.department = rule.department;
 
 -- 一個學生所對應到的審查學分，如果他沒有申請輔系的話，
 -- 系統不會自動幫他計算
@@ -77,7 +81,8 @@ SELECT * FROM PERSONAL_CREDIT;
 
 -- 各個必修
 CREATE VIEW GRADUATION_SEPERATE AS
-SELECT STANDARD_CREDIT.stand_name, STANDARD_CREDIT.category, stu_id, stu_credit, stand_credit, 
+SELECT STANDARD_CREDIT.stand_name, STANDARD_CREDIT.category, 
+        stu_id, stu_credit, stand_credit, 
         CASE WHEN stu_credit >= stand_credit THEN "YES"
              ELSE "NO" END AS "Complete" 
     FROM  PERSONAL_CREDIT, STANDARD_CREDIT
